@@ -1,19 +1,16 @@
 import express from 'express' //export default 가져오기
 import { checkPhone, getToken, sendTokenToSMS } from "./phone.js"; //export 가져오기
-
-// import qqqqq, {checkPhone, getToken} from './phone.js' // export default와 export 함께 쓰기 
-
-// import * as entireFunction from './phone.js' // export 한방에 다 가져오기
-// entireFunction.getToken();
-// entireFunction.checkPhone();;
-
+import { checkValidationEmail, getWelcomeTemplate, sendTemplateToEmail } from './email.js'
+import cors from 'cors';
 import swaggerUi from 'swagger-ui-express'
 import swaggerJSDoc from 'swagger-jsdoc'
 import { options } from './swagger/config.js'
 
+
 const app = express()
 
 app.use(express.json()); 
+app.use(cors()); 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerJSDoc(options)));
 
 app.get('/boards', (req, res) => {
@@ -23,7 +20,6 @@ app.get('/boards', (req, res) => {
     { number: 2, writer: "영희", title: "영희입니다~~", contents: "영희이에요!!!" },
     { number: 3, writer: "훈이", title: "훈이입니다~~", contents: "훈이이에요!!!" },
   ]
-
   // 2. 꺼내온 결과 응답 주기
   res.send(result);
 });
@@ -54,6 +50,25 @@ app.post("/tokens/phone", (req, res) => {
   // 3. 핸드폰번호에 토큰 전송하기
   sendTokenToSMS(myPhone, myToken);
   res.send("인증완료!!!");
+});
+
+app.post("/users", (req, res) => {
+  const { name, age, school, email } = req.body
+
+  // 1. 이메일이 정상인지 확인(1-존재여부, 2-"@"포함여부)
+  const isValid = checkEmail(email)
+  if(isValid === false) return
+
+  // 2. 가입환영 템플릿 만들기
+  const myTemplate = getWelcomeTemplate({ name, age, school })
+
+  // 3. 이메일에 가입환영 템플릿 전송하기
+  sendTemplateToEmail(email, myTemplate)
+  res.send("가입완료!!!")
+})
+
+app.app.listen(3000, () => {
+  console.log("백엔드 API 서버가 켜졌어요!!!");
 });
 
 app.listen(3000, () => {

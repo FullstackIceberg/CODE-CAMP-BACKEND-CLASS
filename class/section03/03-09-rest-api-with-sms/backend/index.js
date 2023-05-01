@@ -7,13 +7,16 @@ import { checkPhone, getToken, sendTokenToSMS } from "./phone.js"; //export 가�
 // entireFunction.getToken();
 // entireFunction.checkPhone();;
 
+import cors from 'cors';
 import swaggerUi from 'swagger-ui-express'
 import swaggerJSDoc from 'swagger-jsdoc'
 import { options } from './swagger/config.js'
 
+
 const app = express()
 
 app.use(express.json()); 
+app.use(cors()); 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerJSDoc(options)));
 
 app.get('/boards', (req, res) => {
@@ -23,7 +26,6 @@ app.get('/boards', (req, res) => {
     { number: 2, writer: "영희", title: "영희입니다~~", contents: "영희이에요!!!" },
     { number: 3, writer: "훈이", title: "훈이입니다~~", contents: "훈이이에요!!!" },
   ]
-
   // 2. 꺼내온 결과 응답 주기
   res.send(result);
 });

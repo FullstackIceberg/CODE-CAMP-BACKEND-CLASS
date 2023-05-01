@@ -1,0 +1,15 @@
+{
+  "name": "03-07-graphql-api-with-apollo-server-board",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "start:dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "axios": "^1.4.0",
+    "coolsms-node-sdk": "^2.0.1",
+    "nodemon": "^2.0.22"
+  }
+}
